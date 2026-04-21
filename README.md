@@ -176,12 +176,15 @@ The final placed-and-routed GDS layout viewed in KLayout:
 - `psum_out_flat` output ports labeled on right edge
 - `clk` port visible at bottom right
 - Alternating row orientation (standard sky130hd cell placement pattern)
-![GDS Layout](images/gds_layout.png)
+
+<img width="1185" height="963" alt="gds_layout" src="https://github.com/user-attachments/assets/45d0c96f-f62a-492e-8a13-814ec378fc53" />
+
 ---
 
 ## Key Challenges & Debugging
 
 This project involved significant EDA toolchain debugging due to version mismatches between the OpenROAD flow scripts (written for newer releases) and the installed tool versions:
+
 
 | Issue | Fix |
 |-------|-----|
