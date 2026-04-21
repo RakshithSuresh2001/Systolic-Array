@@ -112,6 +112,8 @@ SystemVerilog RTL
 | 6_x | Signoff + GDS merge | ~71s |
 | **Total** | | **~23 min** |
 
+<img width="1262" height="552" alt="flow_summary" src="https://github.com/user-attachments/assets/e0145876-265c-489e-9e99-12b735a7c422" />
+
 ---
 
 ## File Structure
