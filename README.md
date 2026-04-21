@@ -176,7 +176,6 @@ The final placed-and-routed GDS layout viewed in KLayout:
 - `psum_out_flat` output ports labeled on right edge
 - `clk` port visible at bottom right
 - Alternating row orientation (standard sky130hd cell placement pattern)
-
 ![GDS Layout](images/gds_layout.png)
 ---
 
