@@ -170,14 +170,12 @@ ALL PASS — 8x8 systolic array verified
 
 The final placed-and-routed GDS layout viewed in KLayout:
 
-> *(Add screenshot of KLayout layout here)*
+<img width="1185" height="963" alt="gds_layout" src="https://github.com/user-attachments/assets/45d0c96f-f62a-492e-8a13-814ec378fc53" />
 
 - Dense standard cell rows visible across core area
 - `psum_out_flat` output ports labeled on right edge
 - `clk` port visible at bottom right
 - Alternating row orientation (standard sky130hd cell placement pattern)
-
-<img width="1185" height="963" alt="gds_layout" src="https://github.com/user-attachments/assets/45d0c96f-f62a-492e-8a13-814ec378fc53" />
 
 ---
 
