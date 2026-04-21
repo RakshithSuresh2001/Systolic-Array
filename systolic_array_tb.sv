@@ -1,18 +1,31 @@
 // =============================================================================
 // systolic_array_tb.sv — Testbench for 8x8 Weight-Stationary Systolic Array
-// Author: Rakshith Suresh
 // -----------------------------------------------------------------------------
-// Test configuration:
-//   - weight = 2 loaded into every PE in all 8 rows
-//   - act    = 1 fed into all rows for 8 consecutive cycles
+// Author      : Rakshith Suresh
+// Affiliation : MS Electrical Engineering (VLSI Design & Verification)
+//               University of Southern California, Viterbi School of Engineering
+// Email       : rsuresh@usc.edu
+// GitHub      : https://github.com/RakshithSuresh2001
+// -----------------------------------------------------------------------------
+// Description:
+//   Self-checking testbench with automated PASS/FAIL verification.
+//   Validates correct MAC accumulation and skew-aware output sampling.
 //
-// Expected result:
+// Test Configuration:
+//   weight = 2 loaded into every PE across all 8 rows
+//   act    = 1 fed into all rows for 8 consecutive cycles
+//
+// Expected Result:
 //   Each column accumulates: 8 rows × weight(2) × act(1) = 16
 //
-// Sampling strategy (skew-aware):
+// Sampling Strategy (skew-aware):
 //   Due to horizontal activation propagation, col[k] peaks exactly 1 cycle
 //   after col[k-1]. col[0] peaks at cycle 20; col[7] peaks at cycle 27.
 //   Each column is sampled at its individual peak cycle.
+//
+// Simulation:
+//   Clock     : 10ns period (100 MHz)
+//   VCD output: waves/sa_tb.vcd (for GTKWave / ModelSim viewing)
 // =============================================================================
 
 `timescale 1ns/1ps
@@ -35,7 +48,7 @@ module systolic_array_tb;
     logic [COLS-1:0][ACC_W-1:0]    psum_out;
     logic [COLS-1:0][ACC_W-1:0]    captured;   // snapshot at each col's peak
 
-    // DUT instantiation
+    // ── DUT instantiation ────────────────────────────────────────────────────
     systolic_array #(
         .ROWS(ROWS), .COLS(COLS), .DATA_W(DATA_W), .ACC_W(ACC_W)
     ) dut (
@@ -45,7 +58,7 @@ module systolic_array_tb;
         .act_in(act_in), .psum_out(psum_out)
     );
 
-    // 10ns clock (100 MHz)
+    // ── 10ns clock (100 MHz) ─────────────────────────────────────────────────
     initial clk = 0;
     always #5 clk = ~clk;
 

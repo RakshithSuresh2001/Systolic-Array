@@ -1,9 +1,17 @@
 // =============================================================================
-// systolic_array.sv — 8x8 Weight-Stationary Systolic Array
-// Author: Rakshith Suresh
+// systolic_array.sv — 8x8 Weight-Stationary Systolic Array (Top-Level)
 // -----------------------------------------------------------------------------
-// Instantiates an 8x8 grid of PE modules with the following dataflow:
+// Author      : Rakshith Suresh
+// Affiliation : MS Electrical Engineering (VLSI Design & Verification)
+//               University of Southern California, Viterbi School of Engineering
+// Email       : rsuresh@usc.edu
+// GitHub      : https://github.com/RakshithSuresh2001
+// -----------------------------------------------------------------------------
+// Description:
+//   Top-level module instantiating an 8x8 grid of PE modules with
+//   weight-stationary dataflow. Designed for AI/ML inference acceleration.
 //
+// Dataflow:
 //   Activations  →  [PE00][PE01]...[PE07]  → (discarded)
 //   (left edge)     [PE10][PE11]...[PE17]
 //                   ...
@@ -16,10 +24,20 @@
 //   Stages 3-10 : 8 PE rows (each row adds 1 psum register stage)
 //   Stages 11-12: Output psum registers
 //
-// First valid output at col[0]: cycle 20 after activations begin
-// Skew: col[k] peaks 1 cycle after col[k-1] due to horizontal propagation
+// Timing:
+//   First valid output at col[0]: cycle 20 after activations begin
+//   Skew: col[k] peaks 1 cycle after col[k-1] due to horizontal propagation
 //
-// Weight loading: serial, one row per cycle via weight_load + weight_row
+// Weight Loading:
+//   Serial, one row per cycle via weight_load + weight_row interface
+//
+// Tool Flow:
+//   Simulation : ModelSim / QuestaSim (SystemVerilog)
+//   Synthesis  : Yosys 0.44 → SkyWater 130nm HD standard cell library
+//   P&R        : OpenROAD v2.0 (floorplan, place, CTS, route)
+//   GDS        : KLayout merge → 6_final.gds
+//   PDK        : SkyWater sky130hd (TT corner, 025C, 1V80)
+//   Instances  : 25,030 standard cell instances post-synthesis
 // =============================================================================
 
 module systolic_array #(

@@ -1,10 +1,17 @@
 // =============================================================================
 // pe.sv — Processing Element for 8x8 Weight-Stationary Systolic Array
-// Author: Rakshith Suresh
 // -----------------------------------------------------------------------------
-// Implements a single MAC unit. The weight is loaded once via weight_load
-// and held fixed (weight-stationary dataflow). Activations pass through
-// horizontally to the next PE. Partial sums accumulate vertically.
+// Author      : Rakshith Suresh
+// Affiliation : MS Electrical Engineering (VLSI Design & Verification)
+//               University of Southern California, Viterbi School of Engineering
+// Email       : rsuresh@usc.edu
+// GitHub      : https://github.com/RakshithSuresh2001
+// -----------------------------------------------------------------------------
+// Description:
+//   Implements a single MAC (Multiply-Accumulate) processing element.
+//   The weight is loaded once via weight_load and held fixed (weight-stationary
+//   dataflow). Activations pass through horizontally to the next PE.
+//   Partial sums accumulate vertically downward through the array.
 //
 // Operation each clock cycle (when not in reset):
 //   psum_out = psum_in + (weight_reg * act_in)
@@ -12,7 +19,12 @@
 //
 // Parameters:
 //   DATA_W — bit width of activations and weights (default 8)
-//   ACC_W  — bit width of accumulator (default 32)
+//   ACC_W  — bit width of accumulator            (default 32)
+//
+// Tool Flow:
+//   Simulation : ModelSim / QuestaSim (SystemVerilog)
+//   Synthesis  : Yosys 0.44 → SkyWater 130nm HD standard cell library
+//   P&R        : OpenROAD v2.0 (place, CTS, route, GDS)
 // =============================================================================
 
 module pe #(
