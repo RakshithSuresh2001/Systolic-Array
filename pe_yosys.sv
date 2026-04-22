@@ -2,7 +2,7 @@
 // pe_yosys.sv — Processing Element (Yosys-Compatible, SkyWater 130nm)
 // -----------------------------------------------------------------------------
 // Author      : Rakshith Suresh
-// Affiliation : MS Electrical Engineering (VLSI Design & Verification)
+// Affiliation : MS Electrical Engineering 
 //               University of Southern California, Viterbi School of Engineering
 // Email       : rsuresh@usc.edu
 // GitHub      : https://github.com/RakshithSuresh2001
