@@ -14,6 +14,7 @@ A systolic system is a network of processors which rhythmically compute and pass
 A fully custom, tapeout-ready **8×8 weight-stationary systolic array accelerator** designed and implemented from scratch in SystemVerilog, taken through a complete **RTL-to-GDS physical design flow** using open-source EDA tools on the SkyWater 130nm process design kit.
 
 This architecture is the compute backbone of matrix-multiplication engines used in AI/ML inference accelerators (e.g., Google TPU). Each processing element (PE) performs a MAC operation every clock cycle, enabling highly parallel, pipelined matrix-vector multiplication with minimal data movement.
+
 ---
 
 ## Architecture
