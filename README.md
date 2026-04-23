@@ -9,7 +9,7 @@ University of Southern California, Viterbi School of Engineering
 
 ## Overview
 
-A systolic system is a network of processors which rhythmically compute and pass data through the system. In a systolic computing, the function of a processor is a analogous to that of the heart. Every processor regularly pumps data in and out , each time performing some short computation, so that a regualr flow of data is kept upp in the network.
+A systolic system is a network of processors which **rhythmically compute and pass data through the system**. In a systolic computing, the function of a processor is a analogous to that of the heart. Every processor regularly pumps data in and out , each time performing some short computation, so that a regular flow of data is kept up in the network.
 
 A fully custom, tapeout-ready **8×8 weight-stationary systolic array accelerator** designed and implemented from scratch in SystemVerilog, taken through a complete **RTL-to-GDS physical design flow** using open-source EDA tools on the SkyWater 130nm process design kit.
 
