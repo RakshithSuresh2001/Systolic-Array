@@ -2,7 +2,7 @@
 // pe.sv — Processing Element for 8x8 Weight-Stationary Systolic Array
 // -----------------------------------------------------------------------------
 // Author      : Rakshith Suresh
-// Affiliation : MS Electrical Engineering (VLSI Design & Verification)
+// Affiliation : MS Electrical Engineering 
 //               University of Southern California, Viterbi School of Engineering
 // Email       : rsuresh@usc.edu
 // GitHub      : https://github.com/RakshithSuresh2001

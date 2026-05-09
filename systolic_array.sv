@@ -2,7 +2,7 @@
 // systolic_array.sv — 8x8 Weight-Stationary Systolic Array (Top-Level)
 // -----------------------------------------------------------------------------
 // Author      : Rakshith Suresh
-// Affiliation : MS Electrical Engineering (VLSI Design & Verification)
+// Affiliation : MS Electrical Engineering 
 //               University of Southern California, Viterbi School of Engineering
 // Email       : rsuresh@usc.edu
 // GitHub      : https://github.com/RakshithSuresh2001
