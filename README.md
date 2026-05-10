@@ -36,7 +36,7 @@ The design was re-implemented on the [ASAP7 predictive PDK](https://github.com/T
 
 > **Note on power comparison:** The Sky130 power includes dynamic (switching + internal) and leakage components under realistic activity. The ASAP7 figure is leakage-dominated because post-route SPEF back-annotation was used without explicit switching activity annotation — the dynamic contribution is present but not fully captured. The area and frequency numbers are directly comparable.
 
-<img width="466" height="631" alt="image" src="https://github.com/user-attachments/assets/e1cd06c3-18f6-4924-80fa-322056bdb6b4" />
+
 
 ### Key Observations
 
