@@ -34,7 +34,9 @@ The design was re-implemented on the [ASAP7 predictive PDK](https://github.com/T
 | **Utilization** | 44% | 25% | — |
 | **PDK Corner** | TT, 025°C, 1.80V | FF, RVT | — |
 
-> **Note on power comparison:** The Sky130 power includes dynamic (switching + internal) and leakage components under realistic activity. The ASAP7 figure is leakage-dominated because post-route SPEF back-annotation was used without explicit switching activity annotation — the dynamic contribution is present but not fully captured. The area and frequency numbers are directly comparable.
+> **Note on power comparison:** The Sky130 power includes dynamic (switching + internal) and leakage components under realistic activity. The ASAP7 figure is leakage-dominated because post-route SPEF back-annotation was used without explicit switching activity annotation i.e. the dynamic contribution is present but not fully captured. The area and frequency numbers are directly comparable.
+
+
 
 ### Key Observations
 
