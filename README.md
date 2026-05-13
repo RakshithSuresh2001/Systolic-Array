@@ -231,6 +231,57 @@ ALL PASS — 8x8 systolic array verified
 ```
 
 ---
+## SPI Interface
+
+To make the design tapeout-ready, an SPI slave controller wraps the systolic array, reducing the IO pin count from ~390 to 4.
+
+### Pin Map
+
+| Pin | Direction | Description |
+|---|---|---|
+| `spi_clk` | Input | SPI clock from master (Mode 0) |
+| `spi_cs_n` | Input | Chip select, active low |
+| `spi_mosi` | Input | Master → Slave data |
+| `spi_miso` | Output | Slave → Master data |
+
+### Command Protocol
+
+| Command | Byte Sequence | Description |
+|---|---|---|
+| `0x01` | `[0x01][row][w0..w7]` | Load 8 weights into one row |
+| `0x02` | `[0x02][a0..a7]` | Feed activations to all rows |
+| `0x03` | `[0x03]` → 32 bytes back | Read all 8 psum outputs |
+| `0x04` | `[0x04]` | Reset array |
+
+### Verification
+
+Self-checking SPI testbench (`spi_tb.sv`) verifies the full transaction sequence:
+- Load `weight=3` into all 8 rows via 8 SPI write packets
+- Feed `act=2` for 8 cycles via SPI
+- Read back psums via SPI — expected result per column: `8 × 3 × 2 = 48`
+
+All 8 columns return correct result:
+
+=== Results ===
+PASS col[0] = 48
+PASS col[1] = 48
+PASS col[2] = 48
+PASS col[3] = 48
+PASS col[4] = 48
+PASS col[5] = 48
+PASS col[6] = 48
+PASS col[7] = 48
+
+### Waveform
+
+<img width="1634" height="304" alt="Screenshot 2026-05-13 140550" src="https://github.com/user-attachments/assets/00f4f0ed-8c6c-475d-a733-35b6c4742197" />
+
+<img width="1624" height="234" alt="Screenshot 2026-05-13 140742" src="https://github.com/user-attachments/assets/1f9a1500-9b1d-4365-a60c-e0f3e1f30f4e" />
+
+
+*Top: Full SPI transaction sequence showing weight loads, activation feeds, and psum readback. Bottom: Zoomed psum readback showing `shift_tx` loading 0x30 (48) per column and serializing MSB-first over `spi_miso`.*
+
+---
 
 ## GDS Layout (SkyWater 130nm)
 
