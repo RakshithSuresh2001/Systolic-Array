@@ -46,6 +46,27 @@ The design was re-implemented on the [ASAP7 predictive PDK](https://github.com/T
 
 ---
 
+## PDN Analysis — ASAP7 7nm
+
+Post-route power delivery network analysis was performed using OpenROAD's `analyze_power_grid` with SPEF-extracted parasitics.
+
+![VDD IR Drop Heatmap](results/asap7/VDD_IR_drop_heatmap.png)
+
+| Metric | Value |
+|---|---|
+| **Supply Voltage** | 0.77V |
+| **Mean Voltage** | 0.747V |
+| **Mean IR Drop** | 23.04 mV (3.0%) |
+| **Worst IR Drop** | 812.94 mV |
+| **Total Nodes Analyzed** | 98,262 |
+
+**Key observation:** The IR drop heatmap reveals a structured diagonal hot-spot pattern that spatially correlates with the 8×8 PE grid layout. Each processing element contains a full-adder/half-adder accumulator chain (FAx1, HAxp5 cells) with high instantaneous current demand. Nodes falling between M5/M6 power stripes experience elevated drop. The mean IR drop of 23mV (3.0%) is within acceptable bounds; the worst-case outlier is attributed to PE cells mid-span between stripes and a PSM solver artifact (one node reporting -0.043V with no direct strap connection).
+
+**Root cause:** M5/M6 stripe pitch (2.7µm) is insufficient for the PE current density at 500 MHz. Fix: reduce stripe pitch to ≤1.5µm or add a dedicated power mesh at M3/M4 around the PE array region.
+
+<img width="1943" height="907" alt="pdn_heatmap" src="https://github.com/user-attachments/assets/71d3646f-00d9-4230-a26b-b5994bdfa2fe" />
+
+
 ## Architecture
 
 ```
