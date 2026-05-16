@@ -232,32 +232,59 @@ act_out  = act_in                             // registered 1-cycle pass-through
 ## File Structure
 systolic_array/
 ├── verilog/rtl/
+
 │   ├── systolic_array_user_project.v  # Caravel user project wrapper
+
 │   ├── user_project_wrapper.v         # Caravel top-level harness
+
 │   ├── systolic_array.sv              # Top-level array
+
 │   ├── pe.sv                          # Processing element
+
 │   └── spi_slave.sv                   # SPI slave controller
+
 ├── verilog/gl/
+
 │   └── systolic_array_user_project.v  # Gate-level netlist
+
 ├── gds/
+
 │   └── user_project_wrapper.gds.gz    # Final GDS (compressed, Git LFS)
+
 ├── lef/
+
 │   └── systolic_array_user_project.lef
+
 ├── lib/
+
 │   └── systolic_array_user_project.lib
+
 ├── spef/multicorner/
+
 │   ├── systolic_array_user_project.min.spef
+
 │   ├── systolic_array_user_project.nom.spef
+
 │   └── systolic_array_user_project.max.spef
+
 ├── openlane/
+
 │   ├── systolic_array_user_project/config.json
+
 │   └── user_project_wrapper/config.json
+
 ├── SPI_Interface/
+
 │   ├── spi_slave.sv
+
 │   └── spi_tb.sv
+
 ├── systolic_array_tb.sv
+
 ├── flow_summary.png
+
 ├── gds_layout.png
+
 └── README.md
 
 ---
