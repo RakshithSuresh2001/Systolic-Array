@@ -1,0 +1,30 @@
+{
+  "precheck": {
+    "version": "1.3.3",
+    "timestamp": "2026-05-16T04:59:29.033622+00:00",
+    "pdk": "sky130A",
+    "passed": false,
+    "checks": {
+      "gpio_defines": {
+        "status": "fail",
+        "duration_s": 0.0,
+        "details": "User defines file /tmp/tmpvbqrj11k/repo/verilog/rtl/user_defines.v not readable"
+      },
+      "oeb": {
+        "status": "fail",
+        "duration_s": 0.0,
+        "details": "OEB report not produced",
+        "report": {
+          "report_relpath": "/tmp/tmpvbqrj11k/repo/precheck_results/16_MAY_2026___04_59_28/outputs/reports/cvc.oeb.report",
+          "parse_error": "cvc.oeb.report not produced"
+        }
+      },
+      "magic_drc": {
+        "status": "skip",
+        "duration_s": 0,
+        "reason": "optional (use --magic-drc to include)"
+      }
+    },
+    "input_file_hash": "1be147b635a887acc20fd59b0fd9725892c37079"
+  }
+}

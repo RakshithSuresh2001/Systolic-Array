@@ -1,0 +1,10 @@
+2026-05-16 04:59:28 [INFO] Extracting compressed files in: /tmp/tmpvbqrj11k/repo
+2026-05-16 04:59:28 [INFO] make uncompress produced 1 gds/*.gds file(s): user_project_wrapper.gds (make exit 0)
+2026-05-16 04:59:28 [INFO] Project type: digital
+2026-05-16 04:59:28 [INFO] GDS hash (user_project_wrapper): 1be147b635a887acc20fd59b0fd9725892c37079
+2026-05-16 04:59:28 [INFO] Tools: KLayout v0.29.2 | Magic v8.3.471
+2026-05-16 04:59:28 [INFO] PDK: SKY130A unknown
+2026-05-16 04:59:29 [INFO] Running 2 checks: [gpio_defines, oeb]
+2026-05-16 04:59:29 [WARNING] User defines file /tmp/tmpvbqrj11k/repo/verilog/rtl/user_defines.v not readable
+2026-05-16 04:59:29 [ERROR] GPIO defines check failed due to 1 error(s)
+2026-05-16 04:59:29 [ERROR] OEB FAILED: could not find LVS configuration file /tmp/tmpvbqrj11k/repo/lvs/user_project_wrapper/lvs_config.json
