@@ -40,28 +40,51 @@ The first 128 bits of psum output are exposed on the Logic Analyzer bus for debu
 ### Caravel File Structure
 caravel_user_project/
 ├── verilog/
+
 │   ├── rtl/
+
 │   │   ├── systolic_array_user_project.v   # Caravel user project wrapper
+
 │   │   ├── user_project_wrapper.v          # Caravel top-level harness
+
 │   │   ├── systolic_array.sv               # 8x8 systolic array RTL
+
 │   │   ├── pe.sv                           # Processing element
+
 │   │   └── spi_slave.sv                    # SPI slave controller
+
 │   └── gl/
+
 │       └── systolic_array_user_project.v   # Gate-level netlist
+
 ├── gds/
+
 │   └── user_project_wrapper.gds.gz         # Final GDS (compressed)
+
 ├── lef/
+
 │   └── systolic_array_user_project.lef     # Abstract LEF
+
 ├── lib/
+
 │   └── systolic_array_user_project.lib     # Liberty timing model
+
 ├── spef/multicorner/
+
 │   ├── systolic_array_user_project.min.spef
+
 │   ├── systolic_array_user_project.nom.spef
+
 │   └── systolic_array_user_project.max.spef
+
 └── openlane/
+
 ├── systolic_array_user_project/
+
 │   └── config.json                     # OpenLane 2 user project config
+
 └── user_project_wrapper/
+
 └── config.json                     # OpenLane 2 wrapper config
 
 ### OpenLane Hardening
@@ -151,22 +174,6 @@ Post-route power delivery network analysis was performed using OpenROAD's `analy
 
 ---
 
-## Architecture
-Activations (left edge, 1 per row)
-│       │       │       │       │       │       │       │
-▼       ▼       ▼       ▼       ▼       ▼       ▼       ▼
-┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐
-│PE00 │→│PE01 │→│PE02 │→│PE03 │→│PE04 │→│PE05 │→│PE06 │→│PE07 │→
-└──┬──┘ └──┬──┘ └──┬──┘ └──┬──┘ └──┬──┘ └──┬──┘ └──┬──┘ └──┬──┘
-│       │       │       │       │       │       │       │
-┌──▼──┐ ┌──▼──┐
-│PE10 │→│PE11 │→  ...
-└──┬──┘ └──┬──┘
-│       │         ...  (8 rows total)
-▼       ▼       ▼       ▼       ▼       ▼       ▼       ▼
-psum[0] psum[1] psum[2] psum[3] psum[4] psum[5] psum[6] psum[7]
-(Partial sum outputs, bottom edge)
-
 ### Processing Element (PE)
 
 Each PE implements:
@@ -204,29 +211,6 @@ act_out  = act_in                             // registered 1-cycle pass-through
 | Tool | OpenROAD v2.0 | OpenROAD v2.0 |
 
 ---
-
-## Tool Flow
-SystemVerilog RTL
-│
-▼
-┌─────────┐
-│  Yosys  │  0.44+39 — Logic synthesis → standard cells
-│  Synth  │  Liberty frontend + ABC optimization
-└────┬────┘
-│  gate-level netlist (.v) + RTLIL
-▼
-┌──────────────────────────────────────────────────────┐
-│                   OpenROAD v2.0                      │
-│  ┌────────────┐  ┌─────────┐  ┌─────┐  ┌────────┐  │
-│  │ Floorplan  │→ │  Place  │→ │ CTS │→ │ Route  │  │
-│  │ (PDN, IOs) │  │ (GP+DP) │  │     │  │(GR+DR) │  │
-│  └────────────┘  └─────────┘  └─────┘  └────────┘  │
-└────┬─────────────────────────────────────────────────┘
-│  routed DEF + ODB + SPEF
-▼
-┌─────────┐
-│ KLayout │  GDS merge → 6_final.gds
-└─────────┘
 
 ### Flow Steps & Runtime (Sky130)
 
