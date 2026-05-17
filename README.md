@@ -20,6 +20,116 @@ This architecture is the compute backbone of matrix-multiplication engines used 
 
 ---
 
+## Caravel Tapeout Integration — ChipFoundry ChipIgnite CI2609
+
+The design has been integrated into the [Caravel SoC harness](https://github.com/efabless/caravel) for submission to the ChipFoundry ChipIgnite CI2609 shuttle on SkyWater 130nm as part of the Silicon2System contest.
+
+### Integration Architecture
+
+The systolic array and SPI slave are wrapped in a Caravel user project module that exposes the SPI interface through Caravel IO pads:
+
+| Caravel IO | Direction | Signal |
+|---|---|---|
+| `io_in[8]` | Input | `spi_clk` |
+| `io_in[9]` | Input | `spi_cs_n` |
+| `io_in[10]` | Input | `spi_mosi` |
+| `io_out[11]` | Output | `spi_miso` |
+
+The first 128 bits of psum output are exposed on the Logic Analyzer bus for debug readback via the Caravel management SoC.
+
+### Caravel File Structure
+caravel_user_project/
+├── verilog/
+
+│   ├── rtl/
+
+│   │   ├── systolic_array_user_project.v   # Caravel user project wrapper
+
+│   │   ├── user_project_wrapper.v          # Caravel top-level harness
+
+│   │   ├── systolic_array.sv               # 8x8 systolic array RTL
+
+│   │   ├── pe.sv                           # Processing element
+
+│   │   └── spi_slave.sv                    # SPI slave controller
+
+│   └── gl/
+
+│       └── systolic_array_user_project.v   # Gate-level netlist
+
+├── gds/
+
+│   └── user_project_wrapper.gds.gz         # Final GDS (compressed)
+
+├── lef/
+
+│   └── systolic_array_user_project.lef     # Abstract LEF
+
+├── lib/
+
+│   └── systolic_array_user_project.lib     # Liberty timing model
+
+├── spef/multicorner/
+
+│   ├── systolic_array_user_project.min.spef
+
+│   ├── systolic_array_user_project.nom.spef
+
+│   └── systolic_array_user_project.max.spef
+
+└── openlane/
+
+├── systolic_array_user_project/
+
+│   └── config.json                     # OpenLane 2 user project config
+
+└── user_project_wrapper/
+
+└── config.json                     # OpenLane 2 wrapper config
+
+### OpenLane Hardening
+
+The design was hardened using OpenLane 2 with Docker on SkyWater 130nm sky130A PDK:
+
+```bash
+# Install OpenLane 2
+pip3 install openlane
+
+# Install PDK
+volare enable --pdk sky130 --pdk-root ~/pdk <version>
+
+# Harden user project
+openlane --dockerized --pdk sky130A --pdk-root ~/pdk \
+    openlane/systolic_array_user_project/config.json
+
+# Harden wrapper
+openlane --dockerized --pdk sky130A --pdk-root ~/pdk \
+    openlane/user_project_wrapper/config.json
+```
+
+### Precheck Status
+
+Remote precheck run via ChipFoundry platform (cf-precheck v1.3.3, sky130A):
+
+| Check | Status |
+|---|---|
+| topcell | PASS |
+| gpio_defines | PASS |
+| illegal_cellname | PASS |
+| pdnmulti | PASS |
+| metalcheck | PASS |
+| klayout_feol | PASS |
+| klayout_beol | PASS |
+| klayout_offgrid | In progress |
+| klayout_met_min_ca_density | In progress |
+| klayout_zeroarea | In progress |
+| oeb | In progress |
+| lvs | In progress |
+| xor | In progress |
+| spike_check | PASS |
+
+---
+
 ## Cross-Node PPA Comparison: 130nm vs. 7nm
 
 The design was re-implemented on the [ASAP7 predictive PDK](https://github.com/The-OpenROAD-Project/asap7) using the same OpenROAD flow to produce a quantitative cross-node comparison. Both runs achieved full timing closure (WNS = 0, TNS = 0).
@@ -36,8 +146,6 @@ The design was re-implemented on the [ASAP7 predictive PDK](https://github.com/T
 
 > **Note on power comparison:** The Sky130 power includes dynamic (switching + internal) and leakage components under realistic activity. The ASAP7 figure is leakage-dominated because post-route SPEF back-annotation was used without explicit switching activity annotation i.e. the dynamic contribution is present but not fully captured. The area and frequency numbers are directly comparable.
 
-
-
 ### Key Observations
 
 - The **64.6× area reduction** is consistent with the ~18.6× linear scaling expected from the node shrink (130nm/7nm), amplified by ASAP7's denser standard cell library (7.5-track vs. sky130hd's 9-track).
@@ -50,8 +158,6 @@ The design was re-implemented on the [ASAP7 predictive PDK](https://github.com/T
 
 Post-route power delivery network analysis was performed using OpenROAD's `analyze_power_grid` with SPEF-extracted parasitics.
 
-![VDD IR Drop Heatmap](results/asap7/VDD_IR_drop_heatmap.png)
-
 | Metric | Value |
 |---|---|
 | **Supply Voltage** | 0.77V |
@@ -60,40 +166,19 @@ Post-route power delivery network analysis was performed using OpenROAD's `analy
 | **Worst IR Drop** | 812.94 mV |
 | **Total Nodes Analyzed** | 98,262 |
 
-**Key observation:** The IR drop heatmap reveals a structured diagonal hot-spot pattern that spatially correlates with the 8×8 PE grid layout. Each processing element contains a full-adder/half-adder accumulator chain (FAx1, HAxp5 cells) with high instantaneous current demand. Nodes falling between M5/M6 power stripes experience elevated drop. The mean IR drop of 23mV (3.0%) is within acceptable bounds; the worst-case outlier is attributed to PE cells mid-span between stripes and a PSM solver artifact (one node reporting -0.043V with no direct strap connection).
+**Key observation:** The IR drop heatmap reveals a structured diagonal hot-spot pattern that spatially correlates with the 8×8 PE grid layout. Each processing element contains a full-adder/half-adder accumulator chain (FAx1, HAxp5 cells) with high instantaneous current demand. Nodes falling between M5/M6 power stripes experience elevated drop. The mean IR drop of 23mV (3.0%) is within acceptable bounds; the worst-case outlier is attributed to PE cells mid-span between stripes and a PSM solver artifact.
 
 **Root cause:** M5/M6 stripe pitch (2.7µm) is insufficient for the PE current density at 500 MHz. Fix: reduce stripe pitch to ≤1.5µm or add a dedicated power mesh at M3/M4 around the PE array region.
 
 <img width="1943" height="907" alt="pdn_heatmap" src="https://github.com/user-attachments/assets/71d3646f-00d9-4230-a26b-b5994bdfa2fe" />
 
-
-## Architecture
-
-```
-Activations (left edge, 1 per row)
-        │       │       │       │       │       │       │       │
-        ▼       ▼       ▼       ▼       ▼       ▼       ▼       ▼
-     ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐ ┌─────┐
-     │PE00 │→│PE01 │→│PE02 │→│PE03 │→│PE04 │→│PE05 │→│PE06 │→│PE07 │→
-     └──┬──┘ └──┬──┘ └──┬──┘ └──┬──┘ └──┬──┘ └──┬──┘ └──┬──┘ └──┬──┘
-        │       │       │       │       │       │       │       │
-     ┌──▼──┐ ┌──▼──┐
-     │PE10 │→│PE11 │→  ...
-     └──┬──┘ └──┬──┘
-        │       │         ...  (8 rows total)
-        ▼       ▼       ▼       ▼       ▼       ▼       ▼       ▼
-     psum[0] psum[1] psum[2] psum[3] psum[4] psum[5] psum[6] psum[7]
-                    (Partial sum outputs, bottom edge)
-```
+---
 
 ### Processing Element (PE)
 
 Each PE implements:
-
-```
 psum_out = psum_in + (weight_reg × act_in)   // MAC every cycle
 act_out  = act_in                             // registered 1-cycle pass-through
-```
 
 - **Weight-stationary**: weight loaded once, held fixed during computation
 - **8-bit** activations and weights, **32-bit** accumulator (no overflow)
@@ -127,32 +212,6 @@ act_out  = act_in                             // registered 1-cycle pass-through
 
 ---
 
-## Tool Flow
-
-```
-SystemVerilog RTL
-       │
-       ▼
-  ┌─────────┐
-  │  Yosys  │  0.44+39 — Logic synthesis → standard cells
-  │  Synth  │  Liberty frontend + ABC optimization
-  └────┬────┘
-       │  gate-level netlist (.v) + RTLIL
-       ▼
-  ┌──────────────────────────────────────────────────────┐
-  │                   OpenROAD v2.0                      │
-  │  ┌────────────┐  ┌─────────┐  ┌─────┐  ┌────────┐  │
-  │  │ Floorplan  │→ │  Place  │→ │ CTS │→ │ Route  │  │
-  │  │ (PDN, IOs) │  │ (GP+DP) │  │     │  │(GR+DR) │  │
-  │  └────────────┘  └─────────┘  └─────┘  └────────┘  │
-  └────┬─────────────────────────────────────────────────┘
-       │  routed DEF + ODB + SPEF
-       ▼
-  ┌─────────┐
-  │ KLayout │  GDS merge → 6_final.gds
-  └─────────┘
-```
-
 ### Flow Steps & Runtime (Sky130)
 
 | Step | Description | Time |
@@ -168,38 +227,65 @@ SystemVerilog RTL
 | 6_x | Signoff + GDS merge | ~71s |
 | **Total** | | **~23 min** |
 
-![flow_summary](flow_summary.png)
-
 ---
 
 ## File Structure
-
-```
 systolic_array/
-├── src/
-│   ├── pe.sv                    # PE module (SystemVerilog, simulation)
-│   ├── pe_yosys.sv              # PE module (Verilog-2001, synthesis)
-│   ├── systolic_array.sv        # Top-level array (SystemVerilog, simulation)
-│   ├── systolic_array_yosys.sv  # Top-level array (Verilog-2001, synthesis)
-│   └── systolic_array_tb.sv     # Self-checking testbench
-├── flow/
-│   ├── sky130hd/
-│   │   ├── config.mk            # Sky130 OpenROAD config (50 MHz)
-│   │   └── constraint.sdc       # Sky130 timing constraints
-│   └── asap7/
-│       ├── config.mk            # ASAP7 OpenROAD config (500 MHz)
-│       └── constraint.sdc       # ASAP7 timing constraints
-├── results/
-│   ├── sky130hd/systolic_array/base/
-│   │   ├── 6_final.gds          # Final GDS layout
-│   │   ├── 6_final.def          # Final DEF
-│   │   └── 6_final.v            # Final gate-level netlist
-│   └── asap7/systolic_array/base/
-│       ├── 6_final.odb          # Final OpenDB
-│       ├── 6_final.def          # Final DEF
-│       └── 6_final.spef         # Extracted parasitics
+├── verilog/rtl/
+
+│   ├── systolic_array_user_project.v  # Caravel user project wrapper
+
+│   ├── user_project_wrapper.v         # Caravel top-level harness
+
+│   ├── systolic_array.sv              # Top-level array
+
+│   ├── pe.sv                          # Processing element
+
+│   └── spi_slave.sv                   # SPI slave controller
+
+├── verilog/gl/
+
+│   └── systolic_array_user_project.v  # Gate-level netlist
+
+├── gds/
+
+│   └── user_project_wrapper.gds.gz    # Final GDS (compressed, Git LFS)
+
+├── lef/
+
+│   └── systolic_array_user_project.lef
+
+├── lib/
+
+│   └── systolic_array_user_project.lib
+
+├── spef/multicorner/
+
+│   ├── systolic_array_user_project.min.spef
+
+│   ├── systolic_array_user_project.nom.spef
+
+│   └── systolic_array_user_project.max.spef
+
+├── openlane/
+
+│   ├── systolic_array_user_project/config.json
+
+│   └── user_project_wrapper/config.json
+
+├── SPI_Interface/
+
+│   ├── spi_slave.sv
+
+│   └── spi_tb.sv
+
+├── systolic_array_tb.sv
+
+├── flow_summary.png
+
+├── gds_layout.png
+
 └── README.md
-```
 
 ---
 
@@ -212,25 +298,23 @@ The testbench (`systolic_array_tb.sv`) is fully self-checking:
 - Expected result per column: `8 × 2 × 1 = 16`
 - Samples each column at its skew-corrected peak cycle (`col[k]` at cycle `20 + k`)
 - Automatically reports **PASS/FAIL** per column and overall result
-
-```
 --- Loading weights ---
-    weight=2 loaded into all 8 rows
+weight=2 loaded into all 8 rows
 --- Feeding activations ---
-    act=1 fed for 8 cycles
+act=1 fed for 8 cycles
 --- Capturing column peaks (skew = 1 cycle per col) ---
-    col[0] = 16 at cycle 20
-    col[1] = 16 at cycle 21
-    ...
-    col[7] = 16 at cycle 27
+col[0] = 16 at cycle 20
+col[1] = 16 at cycle 21
+...
+col[7] = 16 at cycle 27
 --- PASS/FAIL ---
 PASS col[0] = 16
 PASS col[1] = 16
 ...
 ALL PASS — 8x8 systolic array verified
-```
 
 ---
+
 ## SPI Interface
 
 To make the design tapeout-ready, an SPI slave controller wraps the systolic array, reducing the IO pin count from ~390 to 4.
@@ -261,8 +345,6 @@ Self-checking SPI testbench (`spi_tb.sv`) verifies the full transaction sequence
 - Read back psums via SPI — expected result per column: `8 × 3 × 2 = 48`
 
 All 8 columns return correct result:
-
-=== Results ===
 PASS col[0] = 48
 PASS col[1] = 48
 PASS col[2] = 48
@@ -272,14 +354,9 @@ PASS col[5] = 48
 PASS col[6] = 48
 PASS col[7] = 48
 
-### Waveform
-
 <img width="1634" height="304" alt="Screenshot 2026-05-13 140550" src="https://github.com/user-attachments/assets/00f4f0ed-8c6c-475d-a733-35b6c4742197" />
 
 <img width="1624" height="234" alt="Screenshot 2026-05-13 140742" src="https://github.com/user-attachments/assets/1f9a1500-9b1d-4365-a60c-e0f3e1f30f4e" />
-
-
-*Top: Full SPI transaction sequence showing weight loads, activation feeds, and psum readback. Bottom: Zoomed psum readback showing `shift_tx` loading 0x30 (48) per column and serializing MSB-first over `spi_miso`.*
 
 ---
 
@@ -288,11 +365,6 @@ PASS col[7] = 48
 The final placed-and-routed GDS layout viewed in KLayout:
 
 ![gds_layout](gds_layout.png)
-
-- Dense standard cell rows visible across core area
-- `psum_out_flat` output ports labeled on right edge
-- `clk` port visible at bottom right
-- Alternating row orientation (standard sky130hd cell placement pattern)
 
 ---
 
@@ -314,78 +386,85 @@ The final placed-and-routed GDS layout viewed in KLayout:
 
 | Issue | Fix |
 |---|---|
-| ABC segfault (return code 134) on gzipped liberty files | Decompressed all `.lib.gz` → `.lib`; patched `platforms/asap7/config.mk` |
-| `abc_speed.script` uses `&` network commands unsupported by system ABC | Set `ABC_AREA=1` to switch to `abc_area.script` (standard commands only) |
-| `kepler-formal` LEC check triggered during CTS | Set `LEC_CHECK=0` in design config |
-| OpenROAD GUI save failing in headless WSL | Commented out `gui::show save_images.tcl` in `final_report.tcl` |
-| PDN IR drop 176% on VDD post-route | Root cause: insufficient power strap density for 500 MHz operation; flagged for next iteration |
+| ABC segfault on gzipped liberty files | Decompressed all `.lib.gz` → `.lib`; patched `platforms/asap7/config.mk` |
+| `abc_speed.script` unsupported commands | Set `ABC_AREA=1` to use `abc_area.script` |
+| `kepler-formal` LEC check triggered | Set `LEC_CHECK=0` in design config |
+| OpenROAD GUI save failing in headless WSL | Commented out `gui::show` in `final_report.tcl` |
+| PDN IR drop 176% on VDD post-route | Insufficient power strap density; flagged for next iteration |
+
+### Caravel Integration
+
+| Issue | Fix |
+|---|---|
+| OpenLane 2 Yosys Python scripting not supported | Used `--dockerized` flag to run in Docker container |
+| GDS file 179MB exceeds GitHub 100MB limit | Compressed to 29MB with gzip; tracked with Git LFS |
+| `SYNTH_MAX_FANOUT` deprecated | Replaced with `MAX_FANOUT_CONSTRAINT` |
+| `PL_TARGET_DENSITY` deprecated | Replaced with `PL_TARGET_DENSITY_PCT` |
+| Multiple conflicting drivers for `spi_miso` | Added explicit `io_out[8:10] = 0` tie-off for input pads |
 
 ---
 
 ## How to Run
 
-### Simulation (ModelSim/QuestaSim)
+### Simulation (Icarus Verilog)
 
 ```bash
-mkdir -p waves
-vlog pe.sv systolic_array.sv systolic_array_tb.sv
-vsim -c systolic_array_tb -do "run -all; quit"
+iverilog -g2012 -o sim systolic_array_tb.sv systolic_array.sv pe.sv
+vvp sim
 ```
 
-### RTL-to-GDS Flow — SkyWater 130nm
+### SPI Simulation
+
+```bash
+iverilog -g2012 -o spi_sim SPI_Interface/spi_tb.sv SPI_Interface/spi_slave.sv \
+    systolic_array.sv pe.sv
+vvp spi_sim
+```
+
+### RTL-to-GDS Flow — SkyWater 130nm (OpenROAD)
 
 ```bash
 cd OpenROAD-flow-scripts/flow
 make DESIGN_CONFIG=./designs/sky130hd/systolic_array/config.mk
 ```
 
-### RTL-to-GDS Flow — ASAP7 7nm
+### RTL-to-GDS Flow — ASAP7 7nm (OpenROAD)
 
 ```bash
-# Decompress liberty files first (required — ASAP7 ships .lib.gz which ABC cannot parse)
 cd flow/platforms/asap7/lib/NLDM
 gunzip -k *.lib.gz
-
-# Patch platform config to reference uncompressed libs
 sed -i 's/\.lib\.gz/.lib/g' ../../config.mk
-
-# Run the flow
 cd OpenROAD-flow-scripts/flow
 make DESIGN_CONFIG=./designs/asap7/systolic_array/config.mk
 ```
 
-### Extract PPA Metrics
+### Caravel Hardening (OpenLane 2)
 
 ```bash
-openroad -no_init -exit << 'EOF'
-read_lef platforms/asap7/lef/asap7sc7p5t_28xrvt_1x.lef
-read_liberty platforms/asap7/lib/NLDM/asap7sc7p5t_SEQ_RVT_FF_nldm_220123.lib
-read_liberty platforms/asap7/lib/NLDM/asap7sc7p5t_SIMPLE_RVT_FF_nldm_211120.lib
-read_liberty platforms/asap7/lib/NLDM/asap7sc7p5t_AO_RVT_FF_nldm_211120.lib
-read_liberty platforms/asap7/lib/NLDM/asap7sc7p5t_INVBUF_RVT_FF_nldm_220122.lib
-read_liberty platforms/asap7/lib/NLDM/asap7sc7p5t_OA_RVT_FF_nldm_211120.lib
-read_db results/asap7/systolic_array/base/6_final.odb
-read_sdc results/asap7/systolic_array/base/6_1_fill.sdc
-read_spef results/asap7/systolic_array/base/6_final.spef
-set_propagated_clock [all_clocks]
-report_wns
-report_tns
-report_power
-report_design_area
-EOF
-```
+pip3 install openlane
+volare enable --pdk sky130 --pdk-root ~/pdk <version>
 
-### View GDS Layout
+cd caravel_user_project
+openlane --dockerized --pdk sky130A --pdk-root ~/pdk \
+    openlane/systolic_array_user_project/config.json
 
-```bash
-klayout results/sky130hd/systolic_array/base/6_final.gds
+openlane --dockerized --pdk sky130A --pdk-root ~/pdk \
+    openlane/user_project_wrapper/config.json
 ```
 
 ---
 
-## Next Steps
+## Roadmap
 
-Post-route IR drop analysis shows 0.38% average drop (excellent) with a 46% worst-case outlier likely attributable to PSM solver corner artifacts in the ASAP7 predictive PDK rather than a true connectivity failure.
+- [x] 8×8 systolic array RTL — SystemVerilog, self-checking testbench 80/80
+- [x] RTL-to-GDS on SkyWater 130nm — 50 MHz, full timing closure
+- [x] RTL-to-GDS on ASAP7 7nm — 500 MHz, full timing closure
+- [x] PDN analysis and IR drop heatmap
+- [x] SPI slave interface — 390 pins to 4
+- [x] Caravel user project wrapper — OpenLane 2 hardening complete
+- [ ] Full precheck pass on ChipFoundry
+- [ ] CI2609 shuttle submission
+- [ ] 16×16 systolic array on ASAP7
 
 ---
 
@@ -396,6 +475,8 @@ Post-route IR drop analysis shows 0.38% average drop (excellent) with a 46% wors
 - [ASAP7 Predictive PDK](https://github.com/The-OpenROAD-Project/asap7)
 - [SkyWater 130nm PDK](https://github.com/google/skywater-pdk)
 - [Yosys Open Synthesis Suite](https://github.com/YosysHQ/yosys)
+- [Caravel User Project](https://github.com/efabless/caravel_user_project)
+- [ChipFoundry ChipIgnite](https://chipfoundry.io)
 - Norman P. Jouppi et al., "In-Datacenter Performance Analysis of a Tensor Processing Unit" (Google TPU paper)
 
 ---
