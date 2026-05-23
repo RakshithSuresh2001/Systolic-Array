@@ -84,6 +84,17 @@ A custom SPI slave reduces the IO pin count from 390 to 4 (spi_clk, spi_cs_n, sp
 
 ---
 
+## GDS_Layout
+# SKYWATER 130nm GDS
+
+<img width="1107" height="947" alt="Sky130nm_GDS" src="https://github.com/user-attachments/assets/382ca647-98b7-4d11-91be-ee97af186f60" />
+
+# ASAP7 7nm GDS
+
+<img width="1001" height="838" alt="ASAP7_GDS" src="https://github.com/user-attachments/assets/ddba2866-a6c0-49c9-84ec-0be05a99452d" />
+
+---
+
 ## PDN Analysis (ASAP7)
 
 Post-route PDN analysis ran across 98,262 nodes using analyze_power_grid with SPEF-extracted parasitics.
