@@ -364,16 +364,14 @@ PASS col[7] = 48
 
 The final placed-and-routed GDS layout viewed in KLayout:
 
-<img width="1039" height="841" alt="Screenshot 2026-05-20 112726" src="https://github.com/user-attachments/assets/827bc06e-43f8-4e56-9fc7-831cf1ce6c10" />
-
+<img width="1107" height="947" alt="Screenshot 2026-05-22 233913" src="https://github.com/user-attachments/assets/0c056cd2-2ee9-4c15-8ba0-97695a0f1dfd" />
 
 ---
 ## GDS Layout (ASAP7 7nm)
 
 The final placed-and-routed GDS layout viewed in KLayout:
 
-<img width="1006" height="827" alt="Screenshot 2026-05-20 112532" src="https://github.com/user-attachments/assets/02d7cb9d-326f-4cd7-a249-9dfdeb3d8ff1" />
-
+<img width="1001" height="838" alt="image" src="https://github.com/user-attachments/assets/426b81c0-7bbe-4cab-9ff1-3b2e68af67cf" />
 
 ---
 ## Key Challenges & Debugging
