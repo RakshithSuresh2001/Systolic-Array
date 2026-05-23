@@ -117,7 +117,20 @@ The self-checking testbench loads weight=2 into all 64 PEs, feeds act=1 for 8 cy
 A UVM verification environment is in progress with constrained-random stimulus, functional coverage groups targeting all 64 PE outputs, and a self-checking scoreboard against a cycle-accurate reference model.
 
 ---
+## Waveforms
+Functional simulation — systolic array output columns showing correct accumulation and 1-cycle column skew:
 
+<img width="1634" height="304" alt="Screenshot 2026-05-13 140550" src="https://github.com/user-attachments/assets/fffcb640-974c-41b3-b2ad-14b0bbc66020" />
+
+
+Key signals: clk, rst_n, act_in_flat, psum_out_flat[31:0] through psum_out_flat[255:224]. col[0] produces the first valid output at cycle 20, with each subsequent column delayed by one cycle.
+
+SPI transaction — complete weight load (0x01) followed by inference trigger and 256-bit readback (0x03):
+
+<img width="1624" height="234" alt="Screenshot 2026-05-13 140742" src="https://github.com/user-attachments/assets/6d1525d9-d7d2-465c-8ed7-b3225d7b86bd" />
+
+
+Key signals: spi_clk, spi_cs_n, spi_mosi, spi_miso. The 32-byte partial sum result streams out MSB-first on spi_miso after the 0x03 command byte is received.
 ## Tool Flow
 
 ```
