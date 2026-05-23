@@ -364,10 +364,16 @@ PASS col[7] = 48
 
 The final placed-and-routed GDS layout viewed in KLayout:
 
-![gds_layout](gds_layout.png)
+<img width="1107" height="947" alt="Screenshot 2026-05-22 233913" src="https://github.com/user-attachments/assets/0c056cd2-2ee9-4c15-8ba0-97695a0f1dfd" />
 
 ---
+## GDS Layout (ASAP7 7nm)
 
+The final placed-and-routed GDS layout viewed in KLayout:
+
+<img width="1001" height="838" alt="image" src="https://github.com/user-attachments/assets/426b81c0-7bbe-4cab-9ff1-3b2e68af67cf" />
+
+---
 ## Key Challenges & Debugging
 
 ### Sky130 Flow
