@@ -43,7 +43,9 @@ At N=8, PCIe transfer alone (21-31 us) exceeds the GPU's kernel execution time. 
 
 <img width="516" height="291" alt="image" src="https://github.com/user-attachments/assets/6faf9c99-a906-4154-8eff-836014246f72" />
 
-Memory Traffic (Nsight Compute, N=256)
+## Memory Traffic (Nsight Compute, N=256)
+
+<img width="620" height="204" alt="image" src="https://github.com/user-attachments/assets/3859b0c2-87c7-438d-affa-ca4480dbac5c" />
 
 MetricNaive CUDAcuBLASL1/Tex Memory Traffic274.95 GB8.66 GBSM Throughput (% peak)98.26%74.14%Throughput796.89 GFLOPS2,726 GFLOPS
 
