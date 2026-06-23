@@ -61,11 +61,10 @@ On the RTX 4060 Laptop GPU's roofline (ridge point ~44 FLOPS/byte), naive CUDA s
 
 ## Architecture
 
-```
 
 <img width="1225" height="695" alt="image" src="https://github.com/user-attachments/assets/53e39693-5112-4582-a135-ffb1f5e0cad7" />
 
-```
+---
 
 ### Processing Element
 
