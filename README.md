@@ -31,6 +31,32 @@ Cross-node comparison: 10x frequency gain, 61.7x area reduction, from 130nm to 7
 
 ASAP7 power is VCD-annotated from functional simulation at 500 MHz: 3.87 W internal, 1.18 W switching, 3.58 uW leakage. Clock tree accounts for 1.92 W (38%) of total.
 
+## Hardware vs. GPU: Matrix Multiply Efficiency
+
+The same 8x8 matrix multiply workload was benchmarked on an NVIDIA RTX 4060 Laptop GPU (Ampere, CC 8.9) using naive CUDA and cuBLAS kernels in both FP32 and INT8, across matrix sizes N = 8 to 4096. The full methodology, Nsight Compute profiling, and roofline analysis are written up in a paper targeting GLSVLSI 2027 (see Paper below).
+
+Key Results at N=8 (the array's native size)
+
+MetricGPU (FP32)GPU (INT8)Hardware (sky130hd)AdvantageTotal system latency (kernel + PCIe transfer)51 us30 us46 ns650x - 1,100xEnergy per inference1,785 nJ1,050 nJ0.59 nJ1,780x - 3,025x
+
+At N=8, PCIe transfer alone (21-31 us) exceeds the GPU's kernel execution time. The hardware array, integrated on-die with no transfer step, finishes the entire operation in 46 ns at 500 MHz.
+
+Memory Traffic (Nsight Compute, N=256)
+
+MetricNaive CUDAcuBLASL1/Tex Memory Traffic274.95 GB8.66 GBSM Throughput (% peak)98.26%74.14%Throughput796.89 GFLOPS2,726 GFLOPS
+
+The naive kernel moves 274.95 GB through cache for a problem that needs 768 KB of data, a 358,000x amplification, despite near-perfect SM utilization. cuBLAS reduces this 32x through shared-memory tiling but is still 32x over the theoretical minimum. The hardware array hits that minimum by construction: weights never leave the PE registers.
+
+## Where the GPU Wins
+
+cuBLAS INT8 reaches 28,325 GFLOPS at N=4096 using Tensor Cores, 3.1x faster than cuBLAS FP32 at the same size. The crossover between hardware and GPU efficiency falls between N=64 and N=256. Below that range, the hardware wins on latency, energy, and determinism simultaneously. Above it, GPU throughput takes over and the comparison runs the other way.
+
+## Roofline Position
+
+On the RTX 4060 Laptop GPU's roofline (ridge point ~44 FLOPS/byte), naive CUDA sits at AI = 1.2e-4 and cuBLAS at AI = 3.9e-3, both deep in the memory-bound region. The hardware array sits at AI = 128, 2.9x past the ridge point, in the compute-bound regime.
+
+<img width="744" height="444" alt="Screenshot 2026-06-14 145208" src="https://github.com/user-attachments/assets/4dbca801-e480-4013-83b3-4565f7316fe2" />
+
 ---
 
 ## Architecture
