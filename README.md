@@ -62,17 +62,9 @@ On the RTX 4060 Laptop GPU's roofline (ridge point ~44 FLOPS/byte), naive CUDA s
 ## Architecture
 
 ```
-Activations (left edge, 1 per row)
-        |       |       |       |       |       |       |       |
-        v       v       v       v       v       v       v       v
-     [PE00]->[PE01]->[PE02]->[PE03]->[PE04]->[PE05]->[PE06]->[PE07]->
-        |       |       |       |       |       |       |       |
-     [PE10]->[PE11]->  ...
-        |       |
-       ...    (8 rows total)
-        |       |       |       |       |       |       |       |
-        v       v       v       v       v       v       v       v
-     psum[0] psum[1] psum[2] psum[3] psum[4] psum[5] psum[6] psum[7]
+
+<img width="1225" height="695" alt="image" src="https://github.com/user-attachments/assets/53e39693-5112-4582-a135-ffb1f5e0cad7" />
+
 ```
 
 ### Processing Element
