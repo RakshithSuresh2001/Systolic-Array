@@ -37,8 +37,6 @@ The same 8x8 matrix multiply workload was benchmarked on an NVIDIA RTX 4060 Lapt
 
 ## Key Results at N=8 (the array's native size)
 
-MetricGPU (FP32)GPU (INT8)Hardware (sky130hd)AdvantageTotal system latency (kernel + PCIe transfer)51 us30 us46 ns650x - 1,100xEnergy per inference1,785 nJ1,050 nJ0.59 nJ1,780x - 3,025x
-
 At N=8, PCIe transfer alone (21-31 us) exceeds the GPU's kernel execution time. The hardware array, integrated on-die with no transfer step, finishes the entire operation in 46 ns at 500 MHz.
 
 <img width="516" height="291" alt="image" src="https://github.com/user-attachments/assets/6faf9c99-a906-4154-8eff-836014246f72" />
@@ -46,8 +44,6 @@ At N=8, PCIe transfer alone (21-31 us) exceeds the GPU's kernel execution time. 
 ## Memory Traffic (Nsight Compute, N=256)
 
 <img width="620" height="204" alt="image" src="https://github.com/user-attachments/assets/3859b0c2-87c7-438d-affa-ca4480dbac5c" />
-
-MetricNaive CUDAcuBLASL1/Tex Memory Traffic274.95 GB8.66 GBSM Throughput (% peak)98.26%74.14%Throughput796.89 GFLOPS2,726 GFLOPS
 
 The naive kernel moves 274.95 GB through cache for a problem that needs 768 KB of data, a 358,000x amplification, despite near-perfect SM utilization. cuBLAS reduces this 32x through shared-memory tiling but is still 32x over the theoretical minimum. The hardware array hits that minimum by construction: weights never leave the PE registers.
 
