@@ -35,11 +35,13 @@ ASAP7 power is VCD-annotated from functional simulation at 500 MHz: 3.87 W inter
 
 The same 8x8 matrix multiply workload was benchmarked on an NVIDIA RTX 4060 Laptop GPU (Ampere, CC 8.9) using naive CUDA and cuBLAS kernels in both FP32 and INT8, across matrix sizes N = 8 to 4096. The full methodology, Nsight Compute profiling, and roofline analysis are written up in a paper targeting GLSVLSI 2027 (see Paper below).
 
-Key Results at N=8 (the array's native size)
+## Key Results at N=8 (the array's native size)
 
 MetricGPU (FP32)GPU (INT8)Hardware (sky130hd)AdvantageTotal system latency (kernel + PCIe transfer)51 us30 us46 ns650x - 1,100xEnergy per inference1,785 nJ1,050 nJ0.59 nJ1,780x - 3,025x
 
 At N=8, PCIe transfer alone (21-31 us) exceeds the GPU's kernel execution time. The hardware array, integrated on-die with no transfer step, finishes the entire operation in 46 ns at 500 MHz.
+
+<img width="516" height="291" alt="image" src="https://github.com/user-attachments/assets/6faf9c99-a906-4154-8eff-836014246f72" />
 
 Memory Traffic (Nsight Compute, N=256)
 
