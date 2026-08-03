@@ -180,6 +180,13 @@ SystemVerilog RTL
 | **Total** | | **~23 min** |
 
 ---
+## IHP SG13G2 Tapeout Track
+
+The design has also been taken through a full RTL-to-GDS flow on IHP's SG13G2, a 130nm SiGe BiCMOS process from the Leibniz Institute for High Performance Microelectronics, using LibreLane (the OpenLane successor) as part of a collaboration with Symbiotic EDA's BlueGarden CI system.
+
+<img width="1203" height="882" alt="Screenshot 2026-08-02 172700" src="https://github.com/user-attachments/assets/ad8a12ce-9c8c-4808-98a8-72084c047dd3" />
+
+---
 
 ## Repository Structure
 
