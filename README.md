@@ -110,6 +110,10 @@ A custom SPI slave reduces the IO pin count from 390 to 4 (spi_clk, spi_cs_n, sp
 
 <img width="1001" height="838" alt="ASAP7_GDS" src="https://github.com/user-attachments/assets/ddba2866-a6c0-49c9-84ec-0be05a99452d" />
 
+# IHP 130nm GDS
+
+<img width="1203" height="882" alt="Screenshot 2026-08-02 172700" src="https://github.com/user-attachments/assets/43a9b4c2-7b9e-4e58-8447-bc1b03205e11" />
+
 ---
 
 ## PDN Analysis (ASAP7)
