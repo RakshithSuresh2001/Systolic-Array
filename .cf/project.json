@@ -1,0 +1,76 @@
+{
+  "precheck": {
+    "version": "1.3.3",
+    "timestamp": "2026-05-17T05:06:18.084623+00:00",
+    "pdk": "sky130A",
+    "passed": false,
+    "checks": {
+      "topcell_check": {
+        "status": "pass",
+        "duration_s": 4.04
+      },
+      "gpio_defines": {
+        "status": "fail",
+        "duration_s": 0.0,
+        "details": "User defines file /tmp/tmp444ue0ep/repo/verilog/rtl/user_defines.v not readable"
+      },
+      "xor": {
+        "status": "fail",
+        "duration_s": 83.14
+      },
+      "klayout_feol": {
+        "status": "pass",
+        "duration_s": 693.52
+      },
+      "klayout_beol": {
+        "status": "fail",
+        "duration_s": 1059.08,
+        "details": "klayout_beol failed (stat=-9), see /tmp/tmp444ue0ep/repo/precheck_results/17_MAY_2026___04_24_43/logs/klayout_beol_check.log"
+      },
+      "klayout_offgrid": {
+        "status": "pass",
+        "duration_s": 421.26
+      },
+      "klayout_met_min_ca_density": {
+        "status": "pass",
+        "duration_s": 113.68
+      },
+      "klayout_pin_label_purposes_overlapping_drawing": {
+        "status": "pass",
+        "duration_s": 77.33
+      },
+      "klayout_zeroarea": {
+        "status": "pass",
+        "duration_s": 19.28
+      },
+      "spike_check": {
+        "status": "pass",
+        "duration_s": 17.25
+      },
+      "illegal_cellname_check": {
+        "status": "pass",
+        "duration_s": 4.05
+      },
+      "lvs": {
+        "status": "fail",
+        "duration_s": 0.0,
+        "details": "LVS FAILED: could not find LVS configuration file /tmp/tmp444ue0ep/repo/lvs/user_project_wrapper/lvs_config.json"
+      },
+      "oeb": {
+        "status": "fail",
+        "duration_s": 0.0,
+        "details": "OEB report not produced",
+        "report": {
+          "report_relpath": "/tmp/tmp444ue0ep/repo/precheck_results/17_MAY_2026___04_24_43/outputs/reports/cvc.oeb.report",
+          "parse_error": "cvc.oeb.report not produced"
+        }
+      },
+      "magic_drc": {
+        "status": "skip",
+        "duration_s": 0,
+        "reason": "optional (use --magic-drc to include)"
+      }
+    },
+    "input_file_hash": "8163aed4bad9bd96edd744b3a71b152c74d4b75b"
+  }
+}
