@@ -1,0 +1,78 @@
+{
+  "precheck": {
+    "version": "1.3.3",
+    "timestamp": "2026-05-17T02:06:24.495690+00:00",
+    "pdk": "sky130A",
+    "passed": false,
+    "checks": {
+      "topcell_check": {
+        "status": "pass",
+        "duration_s": 4.29
+      },
+      "gpio_defines": {
+        "status": "fail",
+        "duration_s": 0.0,
+        "details": "User defines file /tmp/tmpu3k9dil2/repo/verilog/rtl/user_defines.v not readable"
+      },
+      "xor": {
+        "status": "fail",
+        "duration_s": 7.11,
+        "details": "Top cell name user_project_wrapper not found"
+      },
+      "klayout_feol": {
+        "status": "pass",
+        "duration_s": 703.71
+      },
+      "klayout_beol": {
+        "status": "fail",
+        "duration_s": 1079.06,
+        "details": "klayout_beol failed (stat=-9), see /tmp/tmpu3k9dil2/repo/precheck_results/17_MAY_2026___01_26_38/logs/klayout_beol_check.log"
+      },
+      "klayout_offgrid": {
+        "status": "pass",
+        "duration_s": 427.44
+      },
+      "klayout_met_min_ca_density": {
+        "status": "pass",
+        "duration_s": 112.91
+      },
+      "klayout_pin_label_purposes_overlapping_drawing": {
+        "status": "fail",
+        "duration_s": 8.57,
+        "details": "klayout_pin_label_purposes_overlapping_drawing failed (stat=1), see /tmp/tmpu3k9dil2/repo/precheck_results/17_MAY_2026___01_26_38/logs/klayout_pin_label_purposes_overlapping_drawing_check.log"
+      },
+      "klayout_zeroarea": {
+        "status": "pass",
+        "duration_s": 19.97
+      },
+      "spike_check": {
+        "status": "pass",
+        "duration_s": 17.44
+      },
+      "illegal_cellname_check": {
+        "status": "pass",
+        "duration_s": 4.06
+      },
+      "lvs": {
+        "status": "fail",
+        "duration_s": 0.0,
+        "details": "LVS FAILED: could not find LVS configuration file /tmp/tmpu3k9dil2/repo/lvs/user_project_wrapper/lvs_config.json"
+      },
+      "oeb": {
+        "status": "fail",
+        "duration_s": 0.0,
+        "details": "OEB report not produced",
+        "report": {
+          "report_relpath": "/tmp/tmpu3k9dil2/repo/precheck_results/17_MAY_2026___01_26_38/outputs/reports/cvc.oeb.report",
+          "parse_error": "cvc.oeb.report not produced"
+        }
+      },
+      "magic_drc": {
+        "status": "skip",
+        "duration_s": 0,
+        "reason": "optional (use --magic-drc to include)"
+      }
+    },
+    "input_file_hash": "53e0ef45e73dc3f3add8fb31355573bd11b4c0ed"
+  }
+}
