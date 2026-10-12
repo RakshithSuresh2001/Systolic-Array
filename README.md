@@ -245,7 +245,7 @@ klayout results/sky130hd/systolic_array/base/6_final.gds
 
 ## Related
 
-- [PicoRISCV-SoC](https://github.com/RakshithSuresh2001/PicoRISCV-SoC) — full RISC-V SoC integrating this systolic array with a PicoRV32 CPU, AXI-Lite MMIO, and SPI slave. ASAP7 PD: 47,051 cells, 5,431 um2, 500 MHz, 0 DRC violations.
+- [PicoRISCV-SoC](https://github.com/RakshithSuresh2001/PicoRISCV-SoC) — full RISC-V SoC integrating this systolic array with a PicoRV32 CPU, AXI-Lite MMIO, and SPI slave. ASAP7 PD: 44,930 cells, 5,683 um2, 500 MHz (setup +863 ps, hold +25 ps), 0 DRC violations.
 
 ---
 
